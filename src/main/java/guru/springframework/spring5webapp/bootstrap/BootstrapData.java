@@ -45,17 +45,20 @@ public class BootstrapData implements CommandLineRunner {
         Book noEJB = new Book("J2EE Development without EJB", "3939459459");
         rod.getBooks().add(noEJB);
         noEJB.getAuthors().add(rod);
-        noEJB.setPublisher(awPress);
-        awPress.getBooks().add(noEJB);
         authorRepository.save(rod);
         bookRepository.save(noEJB);
 
         publisherRepository.save(awPress);
 
         System.out.println("Started in Bootstrap");
+        
         System.out.println("Number of Books: " + bookRepository.count());
+        bookRepository.findAll().forEach(System.out::println);
+
         System.out.println("Number of Authors: " + authorRepository.count());
-        System.out.println("AW-Press published " + awPress.getBooks().size() + " books");
+        authorRepository.findAll().forEach(System.out::println);
+
+        publisherRepository.findAll().forEach(System.out::println);
     }
     
 }

@@ -1,13 +1,17 @@
 package guru.springframework.spring5webapp.domain;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class Author {
@@ -19,7 +23,7 @@ public class Author {
     private String firstName;
     private String lastName;
 
-    @ManyToMany(mappedBy = "authors")
+    @ManyToMany(mappedBy = "authors", fetch = FetchType.EAGER)
     private Set<Book> books = new HashSet<>();
 
     public Author() {
@@ -47,7 +51,11 @@ public class Author {
 
     @Override
     public String toString() {
-        return "Author [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", books=" + books + "]";
+        return "Author [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", books=" + Book.collectionToString(books) + "]";
+    }
+
+    static String collectionToString(@NotNull Collection<Author> authors) {
+        return authors.stream().map(Author::getLastName).collect(Collectors.joining(", "));
     }
 
     public Long getId() {

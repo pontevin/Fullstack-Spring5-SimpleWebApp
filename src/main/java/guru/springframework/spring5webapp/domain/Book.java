@@ -1,9 +1,12 @@
 package guru.springframework.spring5webapp.domain;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -11,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class Book {
@@ -22,7 +26,7 @@ public class Book {
     private String title;
     private String isbn;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "author_book", joinColumns = @JoinColumn(name = "book_id"), inverseJoinColumns = @JoinColumn(name = "author_id"))
     private Set<Author> authors = new HashSet<>();
 
@@ -54,8 +58,12 @@ public class Book {
 
     @Override
     public String toString() {
-        return "Book [id=" + id + ", title=" + title + ", isbn=" + isbn + ", authors=" + authors + ", publisher="
-                + publisher + "]";
+        return "Book [id=" + id + ", title=" + title + ", isbn=" + isbn + ", authors=" + Author.collectionToString(authors)
+                 + ", publisher=" + (publisher != null ? publisher.getName() : "n/a") + "]";
+    }
+
+    static String collectionToString(@NotNull Collection<Book> books) {
+        return books.stream().map(Book::getTitle).collect(Collectors.joining(", "));
     }
 
     public Long getId() {

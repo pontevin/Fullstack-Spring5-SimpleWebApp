@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -20,7 +21,7 @@ public class Publisher {
     private String name;
     private String address;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "publisher_id")
     private Set<Book> books = new HashSet<>();
     
@@ -49,7 +50,7 @@ public class Publisher {
 
     @Override
     public String toString() {
-        return "Publisher [id=" + id + ", name=" + name + ", address=" + address + ", books=" + books + "]";
+        return "Publisher [id=" + id + ", name=" + name + ", address=" + address + ", books=" + Book.collectionToString(books) + "]";
     }
 
     public Long getId() {
